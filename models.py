@@ -5,12 +5,7 @@ from typing import Union
 
 class UserBase(SQLModel):
     username: str = Field(nullable=False)
-    phone: str = Field(nullable=False)
-
-
-class UserLogin(SQLModel):
-    phone: str
-    password: str
+    phone: str = Field(nullable=False, unique=True)
 
 
 class User(UserBase, table=True):
