@@ -4,15 +4,13 @@ from typing import List
 from sqlmodel import Session, select
 from database import create_db_and_tables, engine
 from middlewares.protect import protect
-from models import User, UserCreate, ResponseBase, UserUpdate, TokenBase, Transaction
+from models import User, UserCreate, ResponseBase, UserUpdate, TokenBase, Transaction, TransactionRequest
 from utils import get_password_hash, verify_password, create_access_token
 from decouple import config
 from datetime import timedelta
 from fastapi.middleware.cors import CORSMiddleware
 
-
 app = FastAPI()
-
 
 origins = ["*"]
 
@@ -36,9 +34,9 @@ def on_startup():
 def create_user(user: UserCreate):
     if not len(user.phone) == 10:
         raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Phone number must be 10 digits",
-                )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Phone number must be 10 digits",
+        )
     with Session(engine) as session:
         statement = select(User).where(User.phone == user.phone)
         existing_user = session.exec(statement).first()
@@ -121,24 +119,81 @@ def delete_hero(user_id: str):
         return {"ok": True}
 
 
-@app.post("/transactions", status_code=status.HTTP_201_CREATED, tags=['Transaction'])
-def create_user(transaction: Transaction):
+@app.post("/transactions", response_model=Transaction, status_code=status.HTTP_201_CREATED, tags=['Transaction'])
+def create_transaction(transaction: TransactionRequest, current_user: User = Depends(protect)):
+    """
+    Check if is greater than 0
+    If not, return error with a message
+    """
     if not transaction.amount > 0:
         raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Amount should be greater than 0",
-                )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Amount should be greater than 0",
+        )
+
+    """
+    Check if receiver 's phone number consists of 10 digits
+    If not, return error with a message
+    """
+    if not len(transaction.receiver_phone) == 10:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Receiver phone number must be 10 digits",
+        )
+
+    """
+    Check if there is a value in the amount field
+    If not, return error with a message
+    """
+    if not len(transaction.product) > 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please enter a valid product",
+        )
+
     with Session(engine) as session:
-        statement = select(User).where(User.phone == user.phone)
-        existing_user = session.exec(statement).first()
-        if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Phone number already used",
-            )
-        user.password = get_password_hash(user.password)
-        user_created = User.from_orm(user)
-        session.add(user_created)
+        transaction.sender_phone = current_user.phone
+        transaction_created = Transaction.from_orm(transaction)
+        session.add(transaction_created)
         session.commit()
-        session.refresh(user_created)
-        return user_created
+        session.refresh(transaction_created)
+        return transaction_created
+
+
+@app.get("/transactions", response_model=List[Transaction], status_code=status.HTTP_200_OK, tags=['Transaction'])
+def get_transactions(current_user: User = Depends(protect)):
+    with Session(engine) as session:
+        statement = select(Transaction).where(Transaction.sender_phone == current_user.phone,
+                                              Transaction.deleted_status == False)
+        transactions = session.exec(statement).all()
+        if len(transactions) < 1:
+            raise HTTPException(
+                status_code=status.HTTP_200_OK,
+                detail="You do not have any transactions!",
+            )
+        return transactions
+
+
+@app.patch("/transactions/{trans_id}", status_code=status.HTTP_204_NO_CONTENT, tags=['Transaction'])
+def delete_transaction(trans_id: str, current_user: User = Depends(protect)):
+    with Session(engine) as session:
+        transaction = session.get(Transaction, trans_id)
+        """
+        Check if transaction exists and not deleted
+        If not, return error with a message
+        """
+        if not (transaction and not transaction.deleted_status):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Transaction not found")
+        """
+        Check if the current logged in user is deleting his/her own transaction
+        If not, return error with a message
+        """
+        if not transaction.sender_phone == current_user.phone:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                detail="You are not allowed to perform this action")
+
+        transaction.deleted_status = True
+        session.add(transaction)
+        session.commit()
+        session.refresh(transaction)
+        return {"message": "Transaction deleted successfully"}

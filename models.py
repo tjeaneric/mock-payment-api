@@ -1,4 +1,5 @@
 import uuid as uuid_pkg
+from datetime import datetime
 from sqlmodel import SQLModel, Field
 from typing import Union
 
@@ -7,13 +8,15 @@ from typing import Union
 
 
 class UserBase(SQLModel):
-    username: str = Field(nullable=False)
+    first_name: str = Field(nullable=False)
+    last_name: str = Field(nullable=False)
     phone: str = Field(nullable=False, unique=True)
 
 
 class User(UserBase, table=True):
     id: uuid_pkg.UUID = Field(default_factory=uuid_pkg.uuid4, primary_key=True, nullable=False)
     password: str = Field(nullable=False)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
 
 class UserCreate(UserBase):
@@ -28,6 +31,7 @@ class UserUpdate(SQLModel):
 
 class ResponseBase(UserBase):
     id: uuid_pkg.UUID
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
 
 
 class TokenBase(SQLModel):
@@ -36,13 +40,20 @@ class TokenBase(SQLModel):
     data: ResponseBase
 
 
-# Models for user Table
+# Models for transaction Table
 
-
-class Transaction(SQLModel, table=True):
-    id: uuid_pkg.UUID = Field(default_factory=uuid_pkg.uuid4, primary_key=True, nullable=False)
-    sender_phone: str = Field(nullable=False)
+class TransactionBase(SQLModel):
+    sender_phone: str = Field(foreign_key="user.phone")
     receiver_phone: str = Field(nullable=False)
-    amount: float = Field(nullable=False)
-    sender_id: uuid_pkg.UUID = Field(default=None, foreign_key="user.id")
+    product: str = Field(nullable=False)
+    amount: int = Field(nullable=False)
 
+
+class Transaction(TransactionBase, table=True):
+    id: uuid_pkg.UUID = Field(default_factory=uuid_pkg.uuid4, primary_key=True, nullable=False)
+    deleted_status: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+
+
+class TransactionRequest(TransactionBase):
+    pass
