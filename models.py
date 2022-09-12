@@ -3,6 +3,9 @@ from sqlmodel import SQLModel, Field
 from typing import Union
 
 
+# Models for user Table
+
+
 class UserBase(SQLModel):
     username: str = Field(nullable=False)
     phone: str = Field(nullable=False, unique=True)
@@ -31,4 +34,15 @@ class TokenBase(SQLModel):
     access_token: str
     token_type: str
     data: ResponseBase
+
+
+# Models for user Table
+
+
+class Transaction(SQLModel, table=True):
+    id: uuid_pkg.UUID = Field(default_factory=uuid_pkg.uuid4, primary_key=True, nullable=False)
+    sender_phone: str = Field(nullable=False)
+    receiver_phone: str = Field(nullable=False)
+    amount: float = Field(nullable=False)
+    sender_id: uuid_pkg.UUID = Field(default=None, foreign_key="user.id")
 
