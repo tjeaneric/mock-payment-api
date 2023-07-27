@@ -5,13 +5,13 @@ from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta
 from typing import Union
-from decouple import config
+from config import settings
 from fastapi.security import OAuth2PasswordBearer
 
 
-SECRET_KEY = config("SECRET_KEY")
-ALGORITHM = config("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = config("ACCESS_TOKEN_EXPIRE_MINUTES", default=30, cast=int)
+SECRET_KEY = settings.secret_key
+ALGORITHM = settings.algorithm
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
 
@@ -34,7 +34,7 @@ def get_users(db:Session):
     pass
 
 
-def create_user(db: Session, user: schemas.userBase):
+def create_user(db: Session, user: schemas.UserBase):
     hashed_password = get_password_hash(user.password)
     db_user = models.User(username=user.username, phone=user.phone, password=hashed_password)
     db.add(db_user)

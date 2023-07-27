@@ -1,16 +1,10 @@
 from pydantic import BaseModel
 
 
-class userBase(BaseModel):
+class UserBase(BaseModel):
     username: str
     phone: str
     password: str
 
     class Config:
         orm_mode = True
-
-
-# class userResponse(BaseModel):
-#     id: str
-#     username: str
-#     phone: str
