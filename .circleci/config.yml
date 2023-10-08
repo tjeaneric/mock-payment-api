@@ -5,27 +5,6 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  print-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
-    docker:
-      - image: cimg/node:20.8.0
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Print hello"
-          command: "echo Hello"
-
-  print-world:
-    docker:
-      - image: cimg/node:20.8.0
-    steps:
-      - checkout
-      - run:
-          name: "Print world"
-          command: "echo world!"
   print-my-name:
     docker:
       - image: cimg/node:20.8.0
@@ -35,11 +14,36 @@ jobs:
           name: "Print my name"
           command: echo ${MY_NAME_ENV}
 
+  save_hello_world_output:
+    docker:
+      - image: cimg/node:20.8.0
+    steps:
+      - checkout
+      - run:
+          name: "Output hello world to a file"
+          command: echo "text to output here" > ~/output.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - output.txt
+
+  print_output_file:
+    docker:
+      - image: cimg/node:20.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: "Print from a text file"
+          command: cat output.txt
+
+
 workflows:
   hello-world-workflow:
     jobs:
-      - print-hello
-      - print-world:
-          requires:
-            - print-hello
       - print-my-name
+      - save_hello_world_output
+      - print_output_file:
+          requires:
+            - save_hello_world_output
