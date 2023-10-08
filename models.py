@@ -24,14 +24,14 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(SQLModel):
-    username: Union[str, None] = None
-    phone: Union[str, None] = None
-    password: Union[str, None] = None
+    username: str | None
+    phone: str | None
+    password: str | None
 
 
 class ResponseBase(UserBase):
     id: uuid_pkg.UUID
-    created_at: datetime = Field(default_factory=datetime.now, nullable=False)
+    created_at: datetime
 
 
 class TokenBase(SQLModel):

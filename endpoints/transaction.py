@@ -45,9 +45,8 @@ def create_transaction(session: sessionDep, transaction: TransactionRequest,
     return transaction_created
 
 
-@router.get("/transactions", status_code=status.HTTP_200_OK)
-def get_transactions(session: sessionDep, current_user: User = Depends(protect)) -> list[
-    Transaction]:
+@router.get("/transactions", response_model=list[Transaction], status_code=status.HTTP_200_OK)
+def get_transactions(session: sessionDep, current_user: User = Depends(protect)):
     statement = select(Transaction).where(Transaction.sender_phone == current_user.phone,
                                           Transaction.deleted_status == False)
     transactions = session.exec(statement).all()
