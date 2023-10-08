@@ -19,7 +19,7 @@ jobs:
       - image: cimg/python:3.11
     steps:
       - checkout
-      - run: poetry install black
+      - run: poetry add black
       - run: poetry run black . --check
 
 workflows:
