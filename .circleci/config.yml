@@ -36,7 +36,7 @@ jobs:
           at: ~/
       - run:
           name: "Print from a text file"
-          command: cat output.txt
+          command: cat ~/output.txt
 
 
 workflows:
