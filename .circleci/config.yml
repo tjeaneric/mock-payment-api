@@ -47,7 +47,7 @@ jobs:
 workflows:
   hello-world-workflow:
     jobs:
-      - print-my-name
+      - print-my-work-flow-id
       - save_hello_world_output
       - print_output_file:
           requires:
