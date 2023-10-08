@@ -23,7 +23,7 @@ jobs:
       - run: poetry run black . --check
 
 workflows:
-  hello-world-workflow:
+  default:
     jobs:
       - build
       - analyze:
