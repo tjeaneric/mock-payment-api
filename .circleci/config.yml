@@ -26,6 +26,6 @@ workflows:
   hello-world-workflow:
     jobs:
       - build
-      - analyse:
+      - analyze:
           requires:
             - build
