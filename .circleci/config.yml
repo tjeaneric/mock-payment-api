@@ -26,6 +26,13 @@ jobs:
       - run:
           name: "Print world"
           command: "echo world!"
+  print-my-name:
+    docker:
+      - image: cimg/node:20.8.0
+    steps:
+      - run:
+          name: "Print my name"
+          command: echo ${MY_NAME_ENV}
 
 workflows:
   hello-world-workflow:
@@ -34,3 +41,4 @@ workflows:
       - print-world:
           requires:
             - print-hello
+      - print-my-name
