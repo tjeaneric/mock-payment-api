@@ -4,15 +4,20 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
+commands:
+  print_pipeline_id:
+    description: "A very simple command for demonstration purposes"
+    steps:
+      - run: echo $CIRCLE_WORKFLOW_ID
+
+
 jobs:
-  print-my-name:
+  print-my-work-flow-id:
     docker:
       - image: cimg/node:20.8.0
     steps:
       - checkout
-      - run:
-          name: "Print my name"
-          command: echo ${MY_NAME_ENV}
+      - print_pipeline_id
 
   save_hello_world_output:
     docker:
