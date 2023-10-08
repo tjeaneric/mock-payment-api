@@ -30,6 +30,7 @@ jobs:
     docker:
       - image: cimg/node:20.8.0
     steps:
+      - checkout
       - run:
           name: "Print my name"
           command: echo ${MY_NAME_ENV}
