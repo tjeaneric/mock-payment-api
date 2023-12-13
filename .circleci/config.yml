@@ -19,8 +19,8 @@ jobs:
 workflows:
   default:
     jobs:
-      - build
-      - filters:
-          branches:
-            only:
-              - main
+      - build:
+          filters:
+            branches:
+              only:
+                - main
