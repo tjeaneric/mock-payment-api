@@ -22,7 +22,6 @@ jobs:
             ls -l
             pwd
             poetry config virtualenvs.in-project true
-            poetry shell
             poetry install
       - save_cache:
           paths: [ /.venv ]
