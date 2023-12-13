@@ -1,9 +1,18 @@
 version: 2.1
+orbs:
+  slack: circleci/slack@4.1
 commands:
   print_pipeline_id:
     description: "A very simple command for demonstration purposes"
     steps:
       - run: echo $CIRCLE_WORKFLOW_ID
+
+  notify_on_failure:
+    steps:
+      - slack/notify:
+          event: fail
+          channel: cicd-pipeline
+          template: basic_fail_1
 
 
 jobs:
@@ -22,11 +31,23 @@ jobs:
             ls -l
             pwd
             poetry config virtualenvs.in-project true
-            poetry install
+            poetry install --no-root
       - save_cache:
           paths: [ /.venv ]
           key: mock-payment-deps-{{ checksum "poetry.lock" }}
 
+      - notify_on_failure
+
+
+
+  notify_on_success:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - slack/notify:
+          event: pass
+          channel: cicd-pipeline
+          template: success_tagged_deployment_1
 
 workflows:
   default:
@@ -36,3 +57,5 @@ workflows:
             branches:
               only:
                 - main
+      - notify_on_success:
+          requires: [ build ]
