@@ -20,6 +20,8 @@ jobs:
           command: |
             ls
             pwd
+            cd home/circleci/project
+            ls
       #            poetry config virtualenvs.in-project true
       #            poetry shell
       #            poetry install --no-root
