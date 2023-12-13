@@ -8,14 +8,15 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-fastapi = "^0.100.1"
 uvicorn = { extras = ["standard"], version = "^0.23.1" }
-sqlmodel = "^0.0.8"
 psycopg2-binary = "^2.9.6"
 python-multipart = "^0.0.6"
 python-jose = { extras = ["cryptography"], version = "^3.3.0" }
 passlib = { extras = ["bcrypt"], version = "^1.7.4" }
 alembic = "^1.11.1"
+pydantic-settings = "^2.0.3"
+sqlmodel = "^0.0.14"
+fastapi = "^0.105.0"
 
 
 [build-system]

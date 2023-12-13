@@ -1,16 +1,19 @@
 import uuid as uuid_pkg
 from datetime import datetime
 from sqlmodel import SQLModel, Field
-from typing import Union
-
-
-# Models for user Table
+from pydantic import field_validator
 
 
 class UserBase(SQLModel):
-    first_name: str = Field(nullable=False)
-    last_name: str = Field(nullable=False)
-    phone: str = Field(nullable=False, unique=True)
+    first_name: str
+    last_name: str
+    phone: str
+
+    @field_validator('phone')
+    def validate_phone(cls, value):
+        if len(value) != 10:
+            raise ValueError("Phone number must be 10 digits")
+        return value
 
 
 class User(UserBase, table=True):
@@ -20,7 +23,7 @@ class User(UserBase, table=True):
 
 
 class UserCreate(UserBase):
-    password: str = Field(nullable=False, max_length=4, min_length=4)
+    password: str = Field(max_length=4, min_length=4)
 
 
 class UserUpdate(SQLModel):

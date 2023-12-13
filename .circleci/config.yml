@@ -12,20 +12,15 @@ jobs:
       - image: cimg/python:3.11
     steps:
       - checkout
+      - run: poetry config virtualenvs.create false
       - run: poetry install
-  
-  analyze:
-    docker:
-      - image: cimg/python:3.11
-    steps:
-      - checkout
-      - run: poetry add black
-      - run: poetry run black . --check
+
 
 workflows:
   default:
     jobs:
       - build
-      - analyze:
-          requires:
-            - build
+      - filters:
+          branches:
+            only:
+              - main

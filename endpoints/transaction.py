@@ -1,6 +1,5 @@
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import select
-
-from fastapi import APIRouter, status, Depends, HTTPException
 
 from database import sessionDep
 from middlewares.protect import protect
@@ -9,14 +8,13 @@ from models import Transaction, TransactionRequest, User
 router = APIRouter(prefix="/transactions", tags=["Transactions"], dependencies=[Depends(protect)])
 
 
-@router.post("/transactions", status_code=status.HTTP_201_CREATED)
-def create_transaction(session: sessionDep, transaction: TransactionRequest,
-                       current_user: User = Depends(protect)) -> Transaction:
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_transaction(session: sessionDep, tx_data: TransactionRequest) -> Transaction:
     """
     Check if is greater than 0
     If not, return error with a message
     """
-    if not transaction.amount > 0:
+    if tx_data.amount <= 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Amount should be greater than 0")
 
@@ -24,7 +22,7 @@ def create_transaction(session: sessionDep, transaction: TransactionRequest,
     Check if receiver 's phone number consists of 10 digits
     If not, return error with a message
     """
-    if not len(transaction.receiver_phone) == 10:
+    if len(tx_data.receiver_phone) != 10:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Receiver phone number must be 10 digits")
 
@@ -32,20 +30,19 @@ def create_transaction(session: sessionDep, transaction: TransactionRequest,
     Check if there is a value in the amount field
     If not, return error with a message
     """
-    if not len(transaction.product) > 2:
+    if len(tx_data.product) <= 2:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Please enter a valid product"
-                            )
+                            detail="Please enter a valid product")
 
-    transaction.sender_phone = current_user.phone
-    transaction_created = Transaction.from_orm(transaction)
-    session.add(transaction_created)
+    # New transaction instance
+    transaction = Transaction(**tx_data.model_dump())
+    session.add(transaction)
     session.commit()
-    session.refresh(transaction_created)
-    return transaction_created
+    session.refresh(transaction)
+    return transaction
 
 
-@router.get("/transactions", response_model=list[Transaction], status_code=status.HTTP_200_OK)
+@router.get("", response_model=list[Transaction], status_code=status.HTTP_200_OK)
 def get_transactions(session: sessionDep, current_user: User = Depends(protect)):
     statement = select(Transaction).where(Transaction.sender_phone == current_user.phone,
                                           Transaction.deleted_status == False)
@@ -56,7 +53,7 @@ def get_transactions(session: sessionDep, current_user: User = Depends(protect))
     return transactions
 
 
-@router.patch("/transactions/{trans_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.patch("/{trans_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_transaction(session: sessionDep, trans_id: str, current_user: User = Depends(protect)):
     transaction = session.get(Transaction, trans_id)
     """
@@ -69,12 +66,11 @@ def delete_transaction(session: sessionDep, trans_id: str, current_user: User = 
     Check if the current logged in user is deleting his/her own transaction
     If not, return error with a message
     """
-    if not transaction.sender_phone == current_user.phone:
+    if transaction.sender_phone != current_user.phone:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail="You are not allowed to perform this action")
 
     transaction.deleted_status = True
     session.add(transaction)
     session.commit()
-    session.refresh(transaction)
     return {"message": "Transaction deleted successfully!"}
