@@ -1,0 +1,26 @@
+version: 2.1
+commands:
+  print_pipeline_id:
+    description: "A very simple command for demonstration purposes"
+    steps:
+      - run: echo $CIRCLE_WORKFLOW_ID
+
+
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.11
+    steps:
+      - checkout
+      - run: poetry config virtualenvs.create false
+      - run: poetry install
+
+
+workflows:
+  default:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - main
