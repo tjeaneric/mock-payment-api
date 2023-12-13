@@ -18,6 +18,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            ls
             poetry config virtualenvs.in-project true
             poetry shell
             poetry install --no-root
