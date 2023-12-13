@@ -19,9 +19,10 @@ jobs:
           name: Install dependencies
           command: |
             ls
-            poetry config virtualenvs.in-project true
-            poetry shell
-            poetry install --no-root
+            pwd
+      #            poetry config virtualenvs.in-project true
+      #            poetry shell
+      #            poetry install --no-root
       - save_cache:
           paths: [ /.venv ]
           key: mock-payment-deps-{{ checksum "poetry.lock" }}
