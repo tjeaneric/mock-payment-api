@@ -18,7 +18,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            ls
+            ls -la
+            ls -l
             pwd
             cd home/circleci/project
             ls
