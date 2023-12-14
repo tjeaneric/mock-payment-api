@@ -30,6 +30,7 @@ jobs:
             ls -la
             ls -l
             pwd
+            cd pwd/home/eric
             poetry config virtualenvs.in-project true
             poetry install --no-root
       - save_cache:
