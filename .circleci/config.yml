@@ -61,7 +61,7 @@ jobs:
                   "type": "section",
                   "fields": [
                     {
-                      "type": "markdown",
+                      "type": "mrkdwn",
                       "text": "*Job*: ${CIRCLE_JOB}"
                     }
                   ]
@@ -70,19 +70,19 @@ jobs:
                   "type": "section",
                   "fields": [
                     {
-                      "type": "markdown",
+                      "type": "mrkdwn",
                       "text": "*Project*:\n$CIRCLE_PROJECT_REPONAME"
                     },
                     {
-                      "type": "markdown",
+                      "type": "mrkdwn",
                       "text": "*Branch*:\n$CIRCLE_BRANCH"
                             },
                             {
-                      "type": "markdown",
+                      "type": "mrkdwn",
                       "text": "*Commit*:\n$CIRCLE_SHA1"
                     },
                     {
-                      "type": "markdown",
+                      "type": "mrkdwn",
                       "text": "*Author*:\n$CIRCLE_USERNAME"
                     }
                   ],
