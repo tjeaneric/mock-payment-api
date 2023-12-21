@@ -9,16 +9,14 @@
     src: artifact.tar.gz
     dest: ~/backend-app
 
-- name: "Installing Node Dependencies"
+- name: "Installing project Dependencies"
   shell: |
-    cd ~/backend-app
     npm i
 
-- name: "Executing Node app with PM2"
+- name: "Executing FastAPI app with PM2"
   shell: |
-    cd ~/backend-app/dist
     pm2 stop default
-    pm2 start main.js
+    pm2 start "gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app" --name mock-payment-api
 
   register: execute_node
 
