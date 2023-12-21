@@ -5,15 +5,19 @@ commands:
     description: Install Python 3.11
     steps:
       - run:
-          name: Install Node.js 13.8.0
+          name: Install Python 3.11
           command: |
-            # Install Node.js LTS version as our base Node.js version
-            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-            sudo apt install -y nodejs
-
-            # Use n version manager to use Node.js v13.8.0
-            sudo npm install --global n
-            sudo n 13.8.0
+            sudo apt install -y make build-essential libssl-dev zlib1g-dev \
+            libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev \
+            libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+            
+            curl https://pyenv.run | bash
+            
+            echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+            echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+            echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n eval "$(pyenv init -)"\nfi' >> ~/.bashrc
+            exec "$SHELL"
+            pyenv install 3.11
 
   install_awscli:
     description: Install AWS CLI v2
@@ -120,7 +124,7 @@ jobs:
       - install_ansible
       - install_awscli
       - add_ssh_keys:
-          fingerprints: [ "07:f4:99:6e:bc:aa:7a:d6:08:b7:36:3a:ad:2f:a8:84" ]
+          fingerprints: [ "8f:de:93:62:b8:ce:d6:81:1e:49:f7:c2:c6:8e:02:a4" ]
       - attach_workspace:
           at: ~/
       # - run:
@@ -140,7 +144,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: cimg/python:3.10
+      - image: cimg/python:3.11
     steps:
       - checkout
       - install_awscli
@@ -173,11 +177,11 @@ jobs:
       - checkout
       - install_ansible
       - install_awscli
-      - install_nodejs
+      - install_python
       - restore_cache:
           keys: [ backend-build ]
       - add_ssh_keys:
-          fingerprints: [ "07:f4:99:6e:bc:aa:7a:d6:08:b7:36:3a:ad:2f:a8:84" ]
+          fingerprints: [ "8f:de:93:62:b8:ce:d6:81:1e:49:f7:c2:c6:8e:02:a4" ]
       - attach_workspace:
           at: ~/
       - run:
