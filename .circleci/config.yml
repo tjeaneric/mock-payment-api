@@ -174,7 +174,7 @@ jobs:
       - checkout
       - install_ansible
       - install_awscli
-      - install_python
+      #      - install_python
       - restore_cache:
           keys: [ backend-build ]
       - add_ssh_keys:
