@@ -6,7 +6,6 @@ authors = ["Jean Eric TUYISHIMIRE <ericjohn415@gmail.com>"]
 license = "MIT License"
 readme = "README.md"
 
-packages = [{ include = "mock-payment-api" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"

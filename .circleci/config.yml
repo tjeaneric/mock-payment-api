@@ -183,7 +183,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            poetry install
+            poetry install --no-root
       - run:
           name: Package backend
           command: |
