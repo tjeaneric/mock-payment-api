@@ -74,7 +74,8 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: mock-payment-deps-{{ checksum "poetry.lock" }}
+          keys:
+            - mock-payment-deps-{{ checksum "poetry.lock" }}
       - run:
           name: Back-end build
           command: |
@@ -175,7 +176,8 @@ jobs:
       - install_ansible
       - install_awscli
       - restore_cache:
-          keys: mock-payment-deps-{{ checksum "poetry.lock" }}
+          keys:
+            - mock-payment-deps-{{ checksum "poetry.lock" }}
       - add_ssh_keys:
           fingerprints: [ "8f:de:93:62:b8:ce:d6:81:1e:49:f7:c2:c6:8e:02:a4" ]
       - attach_workspace:
