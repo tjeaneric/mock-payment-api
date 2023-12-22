@@ -175,7 +175,7 @@ jobs:
       - install_ansible
       - install_awscli
       - restore_cache:
-          keys: [ backend-build ]
+          keys: [ mock-payment-deps-{ { checksum "poetry.lock" } } ]
       - add_ssh_keys:
           fingerprints: [ "8f:de:93:62:b8:ce:d6:81:1e:49:f7:c2:c6:8e:02:a4" ]
       - attach_workspace:
@@ -219,7 +219,7 @@ jobs:
                 --output text)
 
             # Generate the API URL
-            export API_URL=http://${BACKEND_PUBLIC_IP}:3030
+            export API_URL=http://${BACKEND_PUBLIC_IP}:8000
 
             # Performing a get request with curl and checking for "ok" in the response
             if curl -s $API_URL/api/status | grep "ok"
