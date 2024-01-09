@@ -183,17 +183,13 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Install dependencies
+          name: Build docker image
           command: |
-            poetry install --no-root
-      - run:
-          name: Package backend
-          command: |
-            poetry build
-            tar -czf artifact.tar.gz dist/* package*
-
-            cd ..
-            cp ./artifact.tar.gz .circleci/ansible/roles/deploy/files
+            export TAG='0.1.<< pipeline.number >>'
+            export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
+            docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
+            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+            docker push -a $DOCKER_LOGIN/$IMAGE_NAME
       - run:
           name: Deploy backend
           command: |
@@ -201,6 +197,15 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
+      - run:
+          name: Run docker image
+          command: |
+            export TAG='0.1.<< pipeline.number >>'
+            export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
+            docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
+            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+            docker push -a $DOCKER_LOGIN/$IMAGE_NAME
+            docker run -d --name $CIRCLE_PROJECT_REPONAME -p 8080:8080 $DOCKER_LOGIN/$IMAGE_NAME:$TAG
       - destroy-environment
   #      - revert-migrations
 
