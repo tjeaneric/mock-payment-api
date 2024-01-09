@@ -4,14 +4,18 @@
     path: ~/backend-app
     state: directory
 
-- name: "Unarchive backend files"
-  unarchive:
-    src: artifact.tar.gz
-    dest: ~/backend-app
+- name: pull an image
+  docker_image:
+    name: $DOCKER_LOGIN/$IMAGE_NAME:$TAG
 
-- name: "Installing project Dependencies"
-  shell: |
-    npm i
+#- name: "Unarchive backend files"
+#  unarchive:
+#    src: artifact.tar.gz
+#    dest: ~/backend-app
+
+#- name: "Installing project Dependencies"
+#  shell: |
+#    npm i
 
 - name: "Executing FastAPI app with PM2"
   shell: |
