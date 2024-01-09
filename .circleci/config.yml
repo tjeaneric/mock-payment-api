@@ -68,22 +68,22 @@ commands:
             fi
 
 jobs:
-  build-backend:
-    docker:
-      - image: cimg/python:3.11
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - mock-payment-deps-{{ checksum "poetry.lock" }}
-      - run:
-          name: Back-end build
-          command: |
-            poetry config virtualenvs.in-project true
-            poetry install --no-root
-      - save_cache:
-          paths: [ /.venv ]
-          key: mock-payment-deps-{{ checksum "poetry.lock" }}
+  #  build-backend:
+  #    docker:
+  #      - image: cimg/python:3.11
+  #    steps:
+  #      - checkout
+  #      - restore_cache:
+  #          keys:
+  #            - mock-payment-deps-{{ checksum "poetry.lock" }}
+  #      - run:
+  #          name: Back-end build
+  #          command: |
+  #            poetry config virtualenvs.in-project true
+  #            poetry install --no-root
+  #      - save_cache:
+  #          paths: [ /.venv ]
+  #          key: mock-payment-deps-{{ checksum "poetry.lock" }}
 
   deploy-infrastructure:
     docker:
@@ -185,26 +185,20 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            export TAG='0.1.<< pipeline.number >>'
-            export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
+            export TAG=latest
+            export IMAGE_NAME=mockpaymentapi
             docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push -a $DOCKER_LOGIN/$IMAGE_NAME
       - run:
           name: Deploy backend
           command: |
-
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       - run:
           name: Run docker image
           command: |
-            export TAG='0.1.<< pipeline.number >>'
-            export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
-            docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
-            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker push -a $DOCKER_LOGIN/$IMAGE_NAME
             docker run -d --name $CIRCLE_PROJECT_REPONAME -p 8080:8080 $DOCKER_LOGIN/$IMAGE_NAME:$TAG
       - destroy-environment
   #      - revert-migrations
@@ -265,14 +259,13 @@ jobs:
       - revert-migrations
 
 workflows:
-  my-workflow:
+  deploy-backend:
     jobs:
-      - build-backend:
-          filters:
-            branches:
-              only: [ main ]
+      #      - build-backend:
+      #          filters:
+      #            branches:
+      #              only: [ main ]
       - deploy-infrastructure:
-          requires: [ build-backend ]
           filters:
             branches:
               only: [ main ]
