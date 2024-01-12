@@ -186,8 +186,8 @@ jobs:
           name: Build docker image
           command: |
             export TAG=latest
-            export IMAGE_NAME=mockpaymentapi
-            docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
+            export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
+            docker build -t$IMAGE_NAME:$TAG .
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push -a $DOCKER_LOGIN/$IMAGE_NAME
       - run:
