@@ -189,9 +189,9 @@ jobs:
           command: |
             export TAG=latest
             export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
-            docker build -t$IMAGE_NAME:$TAG .
+            docker build -t $IMAGE_NAME:$TAG .
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker push -a $DOCKER_LOGIN/$IMAGE_NAME
+            docker push -a $IMAGE_NAME:$TAG
       - run:
           name: Deploy backend
           command: |
@@ -201,7 +201,7 @@ jobs:
       - run:
           name: Run docker image
           command: |
-            docker run -d --name $CIRCLE_PROJECT_REPONAME -p 8080:8080 $DOCKER_LOGIN/$IMAGE_NAME:$TAG
+            docker run -d --name $CIRCLE_PROJECT_REPONAME -p 8080:8080 $IMAGE_NAME:$TAG
       - destroy-environment
   #      - revert-migrations
 
