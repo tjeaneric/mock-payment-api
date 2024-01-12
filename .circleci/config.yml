@@ -189,9 +189,10 @@ jobs:
           command: |
             export TAG=latest
             export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
-            docker build -t mock-payment-api:latest .
+            docker build -t $IMAGE_NAME:$TAG .
+            echo docker images
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin 
-            docker push tuyishimire/mock-payment-api:latest
+            docker push $DOCKER_LOGIN/mock-payment-api:latest
       - run:
           name: Deploy backend
           command: |
