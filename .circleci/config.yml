@@ -183,14 +183,14 @@ jobs:
       - attach_workspace:
           at: ~/
       - setup_remote_docker:
-          docker_layer_caching: true
+          docker_layer_caching: false
       - run:
           name: Build docker image
           command: |
             export TAG=latest
             export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
             docker build -t $IMAGE_NAME:$TAG .
-            docker login -u $DOCKER_LOGIN --password-stdin docker.io
+            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin docker.io
             docker push $DOCKER_LOGIN/$IMAGE_NAME:$TAG
       - run:
           name: Deploy backend
