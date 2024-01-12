@@ -201,7 +201,7 @@ jobs:
       - run:
           name: Run docker image
           command: |
-            docker run -d --name $CIRCLE_PROJECT_REPONAME -p 8080:8080 $DOCKER_LOGIN/$IMAGE_NAME:$TAG
+            docker run -d --name $CIRCLE_PROJECT_REPONAME -p 8080:8080 $IMAGE_NAME:$TAG
       - destroy-environment
   #      - revert-migrations
 
