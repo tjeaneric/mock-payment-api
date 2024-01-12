@@ -190,7 +190,7 @@ jobs:
             export TAG=latest
             export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
             docker build -t $IMAGE_NAME:$TAG .
-            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin docker.io
+            docker login -u $DOCKER_LOGIN --password-stdin docker.io
             docker push $DOCKER_LOGIN/$IMAGE_NAME:$TAG
       - run:
           name: Deploy backend
