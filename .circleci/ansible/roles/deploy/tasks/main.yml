@@ -6,7 +6,7 @@
 
 - name: pull an image
   docker_image:
-    name: $DOCKER_LOGIN/$IMAGE_NAME:$TAG
+    name: tuyishimire/$IMAGE_NAME
 
 #- name: "Unarchive backend files"
 #  unarchive:
