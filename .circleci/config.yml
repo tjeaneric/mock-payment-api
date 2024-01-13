@@ -192,7 +192,7 @@ jobs:
             echo docker images
             docker images
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin 
-            docker push $DOCKER_LOGIN/mock-payment-api
+            docker push tuyishimire/mock-payment-api
       - run:
           name: Deploy backend
           command: |
