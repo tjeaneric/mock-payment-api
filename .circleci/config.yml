@@ -196,10 +196,9 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-                     cd .circleci/ansible
-                     cat inventory.txt
-            #            ansible-playbook -i inventory.txt deploy-backend.yml
-                     docker pull tuyishimire/mock-payment-api
+            cd .circleci/ansible
+            cat inventory.txt
+            docker pull tuyishimire/mock-payment-api
       - run:
           name: Run docker image
           command: |
