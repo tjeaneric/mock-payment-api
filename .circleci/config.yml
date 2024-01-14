@@ -202,7 +202,7 @@ jobs:
       - run:
           name: Run docker image
           command: |
-            docker run -d --name $CIRCLE_PROJECT_REPONAME -p 8080:8080 $IMAGE_NAME
+            docker run -d --name $IMAGE_NAME -p 8080:8080 tuyishimire/$IMAGE_NAME
       - destroy-environment
   #      - revert-migrations
 
