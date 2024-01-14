@@ -7,6 +7,8 @@
 - name: pull an image
   docker_image:
     name: tuyishimire/$IMAGE_NAME
+    source: pull
+
 
 #- name: "Unarchive backend files"
 #  unarchive:
@@ -19,6 +21,8 @@
 
 - name: "Executing FastAPI app with PM2"
   shell: |
+    echo docker images
+    docker images
     pm2 stop default
     pm2 start "gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app" --name mock-payment-api
 
