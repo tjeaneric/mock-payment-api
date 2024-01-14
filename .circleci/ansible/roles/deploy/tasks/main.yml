@@ -5,9 +5,12 @@
     state: directory
 
 - name: Pull an image
-  community.general.docker_image:
-    name: tuyishimire/$IMAGE_NAME
-    source: pull
+  hosts: nodes
+  become: true
+  tasks:
+    - community.general.docker_image:
+      name: tuyishimire/$IMAGE_NAME
+      source: pull
 
 
 #- name: pull an image
