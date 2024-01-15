@@ -198,9 +198,10 @@ jobs:
           command: |
             cd .circleci/ansible
             cat inventory.txt
-            docker pull tuyishimire/mock-payment-api            
-            echo docker images
-            docker images
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      - destroy-environment
+
+
       - run:
           name: Run docker image
           command: |
