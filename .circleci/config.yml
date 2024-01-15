@@ -198,11 +198,13 @@ jobs:
           command: |
             cd .circleci/ansible
             cat inventory.txt
-            docker pull tuyishimire/mock-payment-api
+            docker pull tuyishimire/mock-payment-api            
+            echo docker images
+            docker images
       - run:
           name: Run docker image
           command: |
-            docker run -d --name $IMAGE_NAME -p 8080:8080 tuyishimire/$IMAGE_NAME
+            docker run -d --name mock-payment-api  -p 8080:8080 tuyishimire/mock-payment-api
       - destroy-environment
   #      - revert-migrations
 
