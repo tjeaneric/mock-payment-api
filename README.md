@@ -1,6 +1,5 @@
 # **Mock API Payment**
 
-
 If anything goes wrong, You can contact [Jean Eric TUYISHIMIRE](mailto:ericjohn415@gmail.com)
 
 #### **Description**
@@ -10,7 +9,7 @@ If anything goes wrong, You can contact [Jean Eric TUYISHIMIRE](mailto:ericjohn4
 
 #### **Project requirements**
 
-- You must have Python and pip installed.
+- You must have `Python` and `Poetry` installed.
 - This project uses FastAPI, a Python web framework.
 - This project uses SQLAlchemy and Postgres for database.
 
@@ -21,6 +20,7 @@ If anything goes wrong, You can contact [Jean Eric TUYISHIMIRE](mailto:ericjohn4
 - run `pip install -r requirements.txt`
 - check env.example file and add environment variables to your .env file
 - run `uvicorn main:app --reload`
-- Test the API starting with creating user `POST /users` in documentation or any other platform for testing API
+- Test the API starting with creating user `POST /users` in documentation or any other platform for
+  testing API
 
 ### Happy coding !!
