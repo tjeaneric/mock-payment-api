@@ -18,7 +18,7 @@ contact [Jean Eric TUYISHIMIRE](https://www.linkedin.com/in/tuyishimire/)
 
 - clone the repo using SSH: `git clone git@github.com:tjeaneric/mock-payment-api.git`
   or HTTPS: `git clone https://github.com/tjeaneric/mock-payment-api.git`
-- run `pip install -r requirements.txt`
+- run `poetry install`
 - check env.example file and add environment variables to your .env file
 - run `uvicorn main:app --reload`
 - Test the API starting with creating user `POST /users` in documentation or any other platform for
