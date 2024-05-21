@@ -16,7 +16,7 @@ python-jose = { extras = ["cryptography"], version = "^3.3.0" }
 passlib = { extras = ["bcrypt"], version = "^1.7.4" }
 alembic = "^1.11.1"
 pydantic-settings = "^2.0.3"
-sqlmodel = "^0.0.14"
+sqlmodel = "^0.0.16"
 fastapi = "^0.105.0"
 
 
