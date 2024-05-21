@@ -1,6 +1,7 @@
 # **Mock API Payment**
 
-If anything goes wrong, You can contact [Jean Eric TUYISHIMIRE](mailto:ericjohn415@gmail.com)
+If anything goes wrong, You can
+contact [Jean Eric TUYISHIMIRE](https://www.linkedin.com/in/tuyishimire/)
 
 #### **Description**
 
